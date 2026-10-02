@@ -23,7 +23,7 @@ switch(taskNumber)
             if (response == null || response.Count == 0)
                 throw new Exception("Request failed to get spec.json from the URL");
 
-            var solutionDict = Task1.UrlPathsWithResponseCodesNot200(response);
+            var solutionDict = Task1.urlPathsWithResponseCodesNot200(response);
 
             string prettyJson = JsonSerializer.Serialize(solutionDict, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
@@ -37,6 +37,33 @@ switch(taskNumber)
     }
     case 2:
     {
+        try
+        {
+            var client = new RestClient("https://httpbin.org/post");
+            client.AddDefaultHeader("User-Agent", "Learning Automation");
+
+            var request = new RestRequest("", Method.Post);
+            request.AddParameter("custname", "Bassel Yasser");
+            request.AddParameter("custtel", "123-456-7890");
+            request.AddParameter("custemail", "basselyasser@example.com");
+            request.AddParameter("delivery", "13:30");
+            request.AddParameter("comments", "Beware the large bloodthirsty dog.");
+
+            var response = client.Execute(request);
+            if (response.IsSuccessful == false || response == null)
+                throw new Exception("POST request returned null response");
+
+            var solutionTuple = Task2.responseFormAndHeaders(response);
+
+            string prettyJson = JsonSerializer.Serialize(solutionTuple, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine("\"Item1\" is the Form part of the response json, and \"Item2\" are the headers.");
+            Console.WriteLine(prettyJson);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
         break;
     }
     case 3:

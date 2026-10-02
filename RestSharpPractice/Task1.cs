@@ -9,7 +9,7 @@ namespace RestSharpPractice
 {
     internal class Task1
     {
-        public static Dictionary<string, string> UrlPathsWithResponseCodesNot200(Dictionary<string, object> responseJson)
+        public static Dictionary<string, string> urlPathsWithResponseCodesNot200(Dictionary<string, object> responseJson)
         {
             var taskSolution = new Dictionary<string, string>();
 
