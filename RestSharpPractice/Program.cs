@@ -68,6 +68,33 @@ switch(taskNumber)
     }
     case 3:
     {
+        try
+        {
+            var client = new RestClient("https://countries.dev/");
+            client.AddDefaultHeader("User-Agent", "Learning Automation");
+
+            var countriesRequest = new RestRequest("/countries/");
+            var response = await client.GetAsync<List<CountryData>>(countriesRequest);
+
+            if (response == null)
+                throw new Exception("Request failed to get countries data");
+
+            var languageCodes = Task3.getAllUniqueLanguageCodes(response);
+
+            string prettyJson = JsonSerializer.Serialize(languageCodes, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(prettyJson);
+
+            Console.WriteLine($"Fetching population data...");
+
+            var populationCountByLanguageCode = await Task3.populationCountByLanguageCode(client, languageCodes);
+            prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(prettyJson);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
         break;
     }
     default:
