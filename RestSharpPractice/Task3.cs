@@ -4,7 +4,7 @@ namespace RestSharpPractice
 {
     internal class Task3
     {
-        public static List<string> getAllUniqueLanguageCodes(List<CountryData> countryDataList)
+        public static List<string> GetAllUniqueLanguageCodes(List<CountryData> countryDataList)
         {
             var uniqueLanguages = new HashSet<string>();
 
@@ -26,7 +26,7 @@ namespace RestSharpPractice
             return uniqueLanguages.ToList();
         }
 
-        public static async Task<Dictionary<string, long>> populationCountByLanguageCode(RestClient client, List<string> languageCodes)
+        public static async Task<Dictionary<string, long>> PopulationCountByLanguageCode(RestClient client, List<string> languageCodes)
         {
             var populationsDict = new Dictionary<string, long>();
 

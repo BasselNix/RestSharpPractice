@@ -8,7 +8,7 @@ namespace RestSharpPractice
 {
     internal class Task2
     {
-        public static Tuple<Dictionary<string, object>, Dictionary<string, object>> responseFormAndHeaders(RestResponse response)
+        public static Tuple<Dictionary<string, object>, Dictionary<string, object>> ResponseFormAndHeaders(RestResponse response)
         {
             // Get the "form" element in response
             JsonDocument doc = JsonDocument.Parse(response.Content);

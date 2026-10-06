@@ -9,82 +9,33 @@ namespace RestSharpPractice
 {
     internal class Task1
     {
-        public static Dictionary<string, string> urlPathsWithResponseCodesNot200(Dictionary<string, object> responseJson)
+        public static Dictionary<string, int[]> UrlPathsWithResponseCodesNot200(SpecData spec)
         {
-            var taskSolution = new Dictionary<string, string>();
+            var taskSolution = new Dictionary<string, int[]>();
 
-            /* Example JSON:
-              {
-                "paths": {
-                    "/absolute-redirect/{n}": {
-                        "get": {
-                            "parameters": [
-                                {
-                                    "in": "path",
-                                    "name": "n",
-                                    "type": "int"
-                                }
-                            ],
-                            "produces": [
-                                "text/html"
-                            ],
-                            "responses": {
-                                "302": {
-                                    "description": "A redirection."
-                                }
-                            }
-                        }
-                    }
-                }
-            */
-            // 1. Navigate to the "paths" object
-            if (responseJson["paths"] is JsonElement pathsElement)
+            if (spec?.Paths == null)
+                throw new Exception("Response does not contain paths");
+
+            foreach (var (path, pathItem) in spec.Paths)
             {
-                var pathsMap = JsonSerializer.Deserialize<Dictionary<string, object>>(pathsElement.GetRawText());
+                if (pathItem == null)
+                    continue;
 
-                if (pathsMap != null)
+                // Extract and parse all response status codes across all HTTP methods for this path
+                var statusCodes = pathItem.Values
+                    .Where(operation => operation?.Responses != null)
+                    .SelectMany(operation => operation.Responses.Keys)
+                    .Select(code => int.TryParse(code, out int parsedCode) ? parsedCode : (int?)null)
+                    .Where(code => code.HasValue)
+                    .Select(code => code.Value)
+                    .Distinct()
+                    .ToArray();
+
+                // If 200 is not present in the status codes, add the path and its codes to the dictionary
+                if (!statusCodes.Contains(200))
                 {
-                    // 2. Loop through each individual path (e.g., "/absolute-redirect/{n}")
-                    foreach (var pathKey in pathsMap.Keys)
-                    {
-                        var methodsElement = (JsonElement)pathsMap[pathKey];
-                        var methodsMap = JsonSerializer.Deserialize<Dictionary<string, object>>(methodsElement.GetRawText());
-
-                        if (methodsMap == null)
-                            continue;
-
-                        // 3. Loop through HTTP methods (get, post, patch, etc.)
-                        foreach (var methodKey in methodsMap.Keys)
-                        {
-                            var detailsElement = (JsonElement)methodsMap[methodKey];
-                            var detailsMap = JsonSerializer.Deserialize<Dictionary<string, object>>(detailsElement.GetRawText());
-
-                            // 4. Look for the "responses" block
-                            if (detailsMap != null && detailsMap.TryGetValue("responses", out var responsesObj) && responsesObj is JsonElement responsesElement)
-                            {
-                                var responsesMap = JsonSerializer.Deserialize<Dictionary<string, object>>(responsesElement.GetRawText());
-
-                                if (responsesMap == null)
-                                    continue;
-
-                                // 5. Check each status code key inside "responses"
-                                foreach (var statusCode in responsesMap.Keys)
-                                {
-                                    if (statusCode != "200")
-                                    {
-                                        // Store the path and the non-200 status code
-                                        // Stores only one non-200 status code per path
-                                        taskSolution[pathKey] = statusCode;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    taskSolution[path] = statusCodes;
                 }
-            }
-            else
-            {
-                throw new Exception("Response does not contain paths key");
             }
 
             return taskSolution;

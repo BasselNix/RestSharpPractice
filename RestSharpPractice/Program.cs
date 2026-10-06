@@ -24,11 +24,11 @@ switch(taskNumber)
             client.AddDefaultHeader("User-Agent", "Learning Automation");
 
             var request = new RestRequest("spec.json");
-            var response = await client.GetAsync<Dictionary<string, object>>(request);
-            if (response == null || response.Count == 0)
+            var response = await client.GetAsync<SpecData>(request);
+            if (response == null || response.Paths.Count == 0)
                 throw new Exception("Request failed to get spec.json from the URL");
 
-            var solutionDict = Task1.urlPathsWithResponseCodesNot200(response);
+            var solutionDict = Task1.UrlPathsWithResponseCodesNot200(response);
 
             string prettyJson = JsonSerializer.Serialize(solutionDict, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
@@ -67,7 +67,7 @@ switch(taskNumber)
             if (response.IsSuccessful == false || response == null)
                 throw new Exception("POST request returned null response");
 
-            var solutionTuple = Task2.responseFormAndHeaders(response);
+            var solutionTuple = Task2.ResponseFormAndHeaders(response);
 
             string prettyJson = JsonSerializer.Serialize(solutionTuple, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine("\"Item1\" is the Form part of the response json, and \"Item2\" are the headers.");
@@ -102,14 +102,14 @@ switch(taskNumber)
             if (response == null)
                 throw new Exception("Request failed to get countries data");
 
-            var languageCodes = Task3.getAllUniqueLanguageCodes(response);
+            var languageCodes = Task3.GetAllUniqueLanguageCodes(response);
 
             string prettyJson = JsonSerializer.Serialize(languageCodes, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
 
             Console.WriteLine($"Fetching population data...");
 
-            var populationCountByLanguageCode = await Task3.populationCountByLanguageCode(client, languageCodes);
+            var populationCountByLanguageCode = await Task3.PopulationCountByLanguageCode(client, languageCodes);
 
             prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
