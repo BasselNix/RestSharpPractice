@@ -15,7 +15,12 @@ switch(taskNumber)
     {
         try
         {
-            var client = new RestClient("https://nghttp2.org/httpbin/");
+            var options = new RestClientOptions("https://nghttp2.org/httpbin/")
+            {
+                Timeout = TimeSpan.FromSeconds(45)
+            };
+
+            var client = new RestClient(options);
             client.AddDefaultHeader("User-Agent", "Learning Automation");
 
             var request = new RestRequest("spec.json");
@@ -28,7 +33,11 @@ switch(taskNumber)
             string prettyJson = JsonSerializer.Serialize(solutionDict, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
         }
-        catch(Exception e)
+        catch (TimeoutException)
+        {
+            Console.WriteLine("The request timed out while contacting the gateway.");
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e.ToString());
         }
@@ -39,7 +48,12 @@ switch(taskNumber)
     {
         try
         {
-            var client = new RestClient("https://httpbin.org/post");
+            var options = new RestClientOptions("https://httpbin.org/post")
+            {
+                Timeout = TimeSpan.FromSeconds(45)
+            };
+
+            var client = new RestClient(options);
             client.AddDefaultHeader("User-Agent", "Learning Automation");
 
             var request = new RestRequest("", Method.Post);
@@ -59,6 +73,10 @@ switch(taskNumber)
             Console.WriteLine("\"Item1\" is the Form part of the response json, and \"Item2\" are the headers.");
             Console.WriteLine(prettyJson);
         }
+        catch (TimeoutException)
+        {
+            Console.WriteLine("The request timed out while contacting the gateway.");
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.ToString());
@@ -70,7 +88,12 @@ switch(taskNumber)
     {
         try
         {
-            var client = new RestClient("https://countries.dev/");
+            var options = new RestClientOptions("https://countries.dev/")
+            {
+                Timeout = TimeSpan.FromSeconds(45)
+            };
+
+            var client = new RestClient(options);
             client.AddDefaultHeader("User-Agent", "Learning Automation");
 
             var countriesRequest = new RestRequest("/countries/");
@@ -90,6 +113,10 @@ switch(taskNumber)
 
             prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
+        }
+        catch (TimeoutException)
+        {
+            Console.WriteLine("The request timed out while contacting the gateway.");
         }
         catch (Exception e)
         {
