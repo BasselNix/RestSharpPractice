@@ -40,9 +40,7 @@ namespace RestSharpPractice
 
                 long population = 0;
                 foreach (var country in countryList)
-                {
                     population += country.Population;
-                }
 
                 populationsDict.Add(languageCode, population);
             }

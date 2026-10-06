@@ -87,6 +87,7 @@ switch(taskNumber)
             Console.WriteLine($"Fetching population data...");
 
             var populationCountByLanguageCode = await Task3.populationCountByLanguageCode(client, languageCodes);
+
             prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
         }
