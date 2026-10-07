@@ -15,16 +15,8 @@ switch(taskNumber)
     {
         try
         {
-            var options = new RestClientOptions("https://nghttp2.org/httpbin/")
-            {
-                Timeout = TimeSpan.FromSeconds(45)
-            };
-
-            var client = new RestClient(options);
-            client.AddDefaultHeader("User-Agent", "Learning Automation");
-
-            var request = new RestRequest("spec.json");
-            var response = await client.GetAsync<SpecData>(request);
+            var httpbinService = new Nghttp2ApiService();
+            var response = await httpbinService.GetSpecJsonAsync();
             if (response == null || response.Paths.Count == 0)
                 throw new Exception("Request failed to get spec.json from the URL");
 
@@ -48,22 +40,14 @@ switch(taskNumber)
     {
         try
         {
-            var options = new RestClientOptions("https://httpbin.org/post")
-            {
-                Timeout = TimeSpan.FromSeconds(45)
-            };
-
-            var client = new RestClient(options);
-            client.AddDefaultHeader("User-Agent", "Learning Automation");
-
-            var request = new RestRequest("", Method.Post);
-            request.AddParameter("custname", "Bassel Yasser");
-            request.AddParameter("custtel", "123-456-7890");
-            request.AddParameter("custemail", "basselyasser@example.com");
-            request.AddParameter("delivery", "13:30");
-            request.AddParameter("comments", "Beware the large bloodthirsty dog.");
-
-            var response = client.Execute(request);
+            var httpbinPostService = new HttpbinApiService();
+            var response = httpbinPostService.PostOrder(
+                custName: "Bassel Yasser",
+                custTel: "123-456-7890",
+                custEmail: "basselyasser@example.com",
+                deliveryTime: "13:30",
+                comments: "Beware the large bloodthirsty dog."
+            );
             if (response.IsSuccessful == false || response == null)
                 throw new Exception("POST request returned null response");
 
@@ -88,17 +72,8 @@ switch(taskNumber)
     {
         try
         {
-            var options = new RestClientOptions("https://countries.dev/")
-            {
-                Timeout = TimeSpan.FromSeconds(45)
-            };
-
-            var client = new RestClient(options);
-            client.AddDefaultHeader("User-Agent", "Learning Automation");
-
-            var countriesRequest = new RestRequest("/countries/");
-            var response = await client.GetAsync<List<CountryData>>(countriesRequest);
-
+            var countriesService = new CountriesApiService();
+            var response = await countriesService.GetCountriesAsync();
             if (response == null)
                 throw new Exception("Request failed to get countries data");
 
@@ -109,7 +84,7 @@ switch(taskNumber)
 
             Console.WriteLine($"Fetching population data...");
 
-            var populationCountByLanguageCode = await Task3.PopulationCountByLanguageCode(client, languageCodes);
+            var populationCountByLanguageCode = await Task3.PopulationCountByLanguageCode(countriesService, languageCodes);
 
             prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);

@@ -26,14 +26,13 @@ namespace RestSharpPractice
             return uniqueLanguages.ToList();
         }
 
-        public static async Task<Dictionary<string, long>> PopulationCountByLanguageCode(RestClient client, List<string> languageCodes)
+        public static async Task<Dictionary<string, long>> PopulationCountByLanguageCode(CountriesApiService clientService, List<string> languageCodes)
         {
             var populationsDict = new Dictionary<string, long>();
 
             foreach (var languageCode in languageCodes)
             {
-                var request = new RestRequest($"/lang/{languageCode}");
-                var countryList = await client.GetAsync<List<CountryData>>(request);
+                var countryList = await clientService.GetLanguageDataAsync(languageCode);
 
                 if (countryList == null)
                     throw new Exception("Request failed to get language data");
