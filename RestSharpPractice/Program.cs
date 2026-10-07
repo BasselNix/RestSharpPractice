@@ -1,6 +1,6 @@
-﻿using RestSharp;
-using RestSharpPractice;
+﻿using RestSharpPractice;
 using System.Text.Json;
+using static RestSharpPractice.HttpbinApiService;
 
 short taskNumber = 0;
 while (taskNumber < 1 || taskNumber > 3)
@@ -15,8 +15,8 @@ switch(taskNumber)
     {
         try
         {
-            var httpbinService = new Nghttp2ApiService();
-            var response = await httpbinService.GetSpecJsonAsync();
+            var nghttpService = new Nghttp2ApiService();
+            var response = await nghttpService.GetSpecJsonAsync();
             if (response == null || response.Paths.Count == 0)
                 throw new Exception("Request failed to get spec.json from the URL");
 
@@ -41,17 +41,17 @@ switch(taskNumber)
         try
         {
             var httpbinPostService = new HttpbinApiService();
-            var response = httpbinPostService.PostOrder(
+            var response = await httpbinPostService.PostOrder(
                 custName: "Bassel Yasser",
                 custTel: "123-456-7890",
                 custEmail: "basselyasser@example.com",
                 deliveryTime: "13:30",
-                comments: "Beware the large bloodthirsty dog."
+                comments: "Beware the large bloodthirsty dog.",
+                size: PizzaSize.medium,
+                toppings: ["cheese", "mushroom"]
             );
-            if (response.IsSuccessful == false || response == null)
-                throw new Exception("POST request returned null response");
 
-            var solutionTuple = Task2.ResponseFormAndHeaders(response);
+            var solutionTuple = Task2.ResponseFormAndHeaders(response.Data, response.Headers);
 
             string prettyJson = JsonSerializer.Serialize(solutionTuple, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine("\"Item1\" is the Form part of the response json, and \"Item2\" are the headers.");
@@ -73,9 +73,7 @@ switch(taskNumber)
         try
         {
             var countriesService = new CountriesApiService();
-            var response = await countriesService.GetCountriesAsync();
-            if (response == null)
-                throw new Exception("Request failed to get countries data");
+            var response = await countriesService.GetCountriesAsync() ?? throw new Exception("Request failed to get countries data");
 
             var languageCodes = Task3.GetAllUniqueLanguageCodes(response);
 

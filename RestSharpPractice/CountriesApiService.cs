@@ -1,7 +1,4 @@
 ﻿using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RestSharpPractice
 {
@@ -13,7 +10,7 @@ namespace RestSharpPractice
         {
             var options = new RestClientOptions(baseUrl)
             {
-                Timeout = TimeSpan.FromSeconds(35)
+                Timeout = TimeSpan.FromSeconds(300)
             };
 
             _client = new RestClient(options);

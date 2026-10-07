@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
-
-namespace RestSharpPractice
+﻿namespace RestSharpPractice
 {
     public class SpecData
     {
-        [JsonPropertyName("paths")]
-        public Dictionary<string, PathItem> Paths { get; set; }
+        required public Dictionary<string, PathItem> Paths { get; set; }
     }
 
     public class PathItem : Dictionary<string, Operation>
@@ -18,13 +12,11 @@ namespace RestSharpPractice
 
     public class Operation
     {
-        [JsonPropertyName("responses")]
-        public Dictionary<string, ResponseDetails> Responses { get; set; }
+        required public Dictionary<string, ResponseDetails> Responses { get; set; }
     }
 
     public class ResponseDetails
     {
-        [JsonPropertyName("description")]
-        public string Description { get; set; }
+        required public string Description { get; set; }
     }
 }

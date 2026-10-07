@@ -1,6 +1,4 @@
-﻿using RestSharp;
-
-namespace RestSharpPractice
+﻿namespace RestSharpPractice
 {
     internal class Task3
     {
@@ -32,14 +30,9 @@ namespace RestSharpPractice
 
             foreach (var languageCode in languageCodes)
             {
-                var countryList = await clientService.GetLanguageDataAsync(languageCode);
+                var countryList = await clientService.GetLanguageDataAsync(languageCode) ?? throw new Exception("Request failed to get language data");
 
-                if (countryList == null)
-                    throw new Exception("Request failed to get language data");
-
-                long population = 0;
-                foreach (var country in countryList)
-                    population += country.Population;
+                long population = countryList.Sum(country => (long)country.Population);
 
                 populationsDict.Add(languageCode, population);
             }
