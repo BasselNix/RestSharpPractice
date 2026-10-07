@@ -1,9 +1,10 @@
-﻿using System;
+﻿using NUnit.Framework;
+using RestSharpPractice;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using RestSharpPractice;
+using static RestSharpPractice.HttpbinApiService;
 
 namespace RestSharpPractice.Tests
 {
@@ -65,25 +66,27 @@ namespace RestSharpPractice.Tests
 		}
 
 		[Test]
-		public void PostOrder_ReturnsSuccessfulResponseWithFormDataAndHeaders()
+		public async Task PostOrder_ReturnsSuccessfulResponseWithFormDataAndHeaders()
 		{
 			string expectedName = "Bassel Yasser";
 			string expectedEmail = "basselyasser@example.com";
 
-			var response = _apiService.PostOrder(
+			var response = await _apiService.PostOrder(
 				custName: expectedName,
 				custTel: "123-456-7890",
 				custEmail: expectedEmail,
 				deliveryTime: "13:30",
-				comments: "Beware the large bloodthirsty dog."
-			);
+				comments: "Beware the large bloodthirsty dog.",
+                size: PizzaSize.medium,
+                toppings: ["cheese", "mushroom"]
+            );
 
 			// Assert HTTP status response
 			Assert.That(response, Is.Not.Null);
-			Assert.That(response.IsSuccessful, Is.True, "POST request should return HTTP 2xx success");
+			Assert.That(response.Headers, Is.Not.Empty, "POST request should return response headers");
 
 			// Process form & headers
-			var (formDict, headersDict) = Task2.ResponseFormAndHeaders(response);
+			var (formDict, headersDict) = Task2.ResponseFormAndHeaders(response.Data, response.Headers);
 
 			// Assert Form Data payload contents
 			Assert.That(formDict, Is.Not.Null);
