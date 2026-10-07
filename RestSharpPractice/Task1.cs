@@ -1,11 +1,4 @@
-﻿using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Text.Json;
-
-namespace RestSharpPractice
+﻿namespace RestSharpPractice
 {
     internal class Task1
     {
