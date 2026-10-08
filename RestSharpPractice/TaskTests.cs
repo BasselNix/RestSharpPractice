@@ -71,7 +71,7 @@ namespace RestSharpPractice.Tests
 				custEmail: expectedEmail,
 				deliveryTime: "13:30",
 				comments: "Beware the large bloodthirsty dog.",
-                size: HttpbinApiService.PizzaSize.medium,
+                size: HttpbinApiService.PizzaSize.Medium,
                 toppings: ["cheese", "mushroom"]
             );
 
