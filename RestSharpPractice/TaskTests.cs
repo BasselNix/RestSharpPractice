@@ -1,9 +1,4 @@
 ﻿using NUnit.Framework;
-using RestSharpPractice;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static RestSharpPractice.HttpbinApiService;
 
 namespace RestSharpPractice.Tests
