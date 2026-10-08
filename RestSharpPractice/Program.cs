@@ -9,11 +9,11 @@ while (taskNumber < 1 || taskNumber > 3)
     short.TryParse(Console.ReadLine(), out taskNumber);
 }
 
-switch(taskNumber)
+try
 {
-    case 1:
+    switch(taskNumber)
     {
-        try
+        case 1:
         {
             var nghttpService = new Nghttp2ApiService();
             var response = await nghttpService.GetSpecJsonAsync();
@@ -24,53 +24,31 @@ switch(taskNumber)
 
             string prettyJson = JsonSerializer.Serialize(solutionDict, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
-        }
-        catch (TimeoutException)
-        {
-            Console.WriteLine("The request timed out while contacting the gateway.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-        }
 
-        break;
-    }
-    case 2:
-    {
-        try
+            break;
+        }
+        case 2:
         {
             var httpbinPostService = new HttpbinApiService();
-            var response = await httpbinPostService.PostOrder(
+            var (data, headers) = await httpbinPostService.PostOrder(
                 custName: "Bassel Yasser",
                 custTel: "123-456-7890",
                 custEmail: "basselyasser@example.com",
                 deliveryTime: "13:30",
                 comments: "Beware the large bloodthirsty dog.",
-                size: PizzaSize.medium,
+                size: PizzaSize.Medium,
                 toppings: ["cheese", "mushroom"]
             );
 
-            var solutionTuple = Task2.ResponseFormAndHeaders(response.Data, response.Headers);
+            var solutionTuple = Task2.ResponseFormAndHeaders(data, headers);
 
             string prettyJson = JsonSerializer.Serialize(solutionTuple, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine("\"Item1\" is the Form part of the response json, and \"Item2\" are the headers.");
             Console.WriteLine(prettyJson);
-        }
-        catch (TimeoutException)
-        {
-            Console.WriteLine("The request timed out while contacting the gateway.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-        }
 
-        break;
-    }
-    case 3:
-    {
-        try
+            break;
+        }
+        case 3:
         {
             var countriesService = new CountriesApiService();
             var response = await countriesService.GetCountriesAsync() ?? throw new Exception("Request failed to get countries data");
@@ -86,18 +64,18 @@ switch(taskNumber)
 
             prettyJson = JsonSerializer.Serialize(populationCountByLanguageCode, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(prettyJson);
-        }
-        catch (TimeoutException)
-        {
-            Console.WriteLine("The request timed out while contacting the gateway.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-        }
 
-        break;
+            break;
+        }
+        default:
+            break;
     }
-    default:
-        break;
+}
+catch (TimeoutException)
+{
+    Console.WriteLine("The request timed out while contacting the gateway.");
+}
+catch (Exception e)
+{
+    Console.WriteLine(e.ToString());
 }
