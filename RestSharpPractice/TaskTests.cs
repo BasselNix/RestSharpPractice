@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using static RestSharpPractice.HttpbinApiService;
 
 namespace RestSharpPractice.Tests
 {
@@ -72,7 +71,7 @@ namespace RestSharpPractice.Tests
 				custEmail: expectedEmail,
 				deliveryTime: "13:30",
 				comments: "Beware the large bloodthirsty dog.",
-                size: PizzaSize.medium,
+                size: HttpbinApiService.PizzaSize.medium,
                 toppings: ["cheese", "mushroom"]
             );
 
