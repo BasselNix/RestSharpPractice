@@ -8,9 +8,9 @@ namespace RestSharpPractice
 
         public enum PizzaSize
         {
-            small,
-            medium,
-            large
+            Small,
+            Medium,
+            Large
         }
 
         public HttpbinApiService(string baseUrl = "https://httpbin.org/")
@@ -25,7 +25,7 @@ namespace RestSharpPractice
         }
 
         // Sends a POST request to the /post endpoint with form parameters.
-        public async Task<(HttpbinPostResponse? Data, Dictionary<string, string> Headers)> PostOrder(
+        public async Task<(HttpbinPostResponse Data, Dictionary<string, string> Headers)> PostOrder(
             string custName,
             string custTel,
             string custEmail,
@@ -41,7 +41,7 @@ namespace RestSharpPractice
             request.AddParameter("custemail", custEmail);
             request.AddParameter("delivery", deliveryTime);
             request.AddParameter("comments", comments);
-            request.AddParameter("size", size.ToString());
+            request.AddParameter("size", size.ToString().ToLower());
 
             foreach(var topping in toppings)
                 request.AddParameter("topping", topping);

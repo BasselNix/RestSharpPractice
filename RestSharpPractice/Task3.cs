@@ -21,7 +21,7 @@
                 }
             }
 
-            return uniqueLanguages.ToList();
+            return [..uniqueLanguages];
         }
 
         public static async Task<Dictionary<string, long>> PopulationCountByLanguageCode(CountriesApiService clientService, List<string> languageCodes)

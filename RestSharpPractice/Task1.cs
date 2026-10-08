@@ -20,7 +20,7 @@
                     .SelectMany(operation => operation.Responses.Keys)
                     .Select(code => int.TryParse(code, out int parsedCode) ? parsedCode : (int?)null)
                     .Where(code => code.HasValue)
-                    .Select(code => code.Value)
+                    .Cast<int>()
                     .Distinct()
                     .ToArray();
 
