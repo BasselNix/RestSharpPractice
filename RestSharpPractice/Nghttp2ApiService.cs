@@ -2,7 +2,7 @@
 
 namespace RestSharpPractice
 {
-    internal class Nghttp2ApiService
+    public class Nghttp2ApiService
     {
         private readonly RestClient _client;
 
@@ -21,7 +21,16 @@ namespace RestSharpPractice
         public async Task<SpecData?> GetSpecJsonAsync()
         {
             var request = new RestRequest("spec.json");
-            return await _client.GetAsync<SpecData>(request);
+
+            try
+            {
+                return await _client.GetAsync<SpecData>(request);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("The request timed out while contacting the gateway.");
+                return null;
+            }
         }
     }
 }

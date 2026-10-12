@@ -1,6 +1,6 @@
 ﻿namespace RestSharpPractice
 {
-    internal class CountryData
+    public class CountryData
     {
         public List<Dictionary<string, string>>? Languages { get; set; }
 
