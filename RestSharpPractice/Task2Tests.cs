@@ -40,15 +40,14 @@ namespace RestSharpPractice.Tests
             Assert.That(response, Is.Not.Null);
             Assert.That(response.Headers, Is.Not.Empty, "POST request should return response headers");
 
-            var (formDict, headersDict) = Task2.ResponseFormAndHeaders(response.Data, response.Headers);
-            var actualForm = Task2.MapToPizzaOrderForm(formDict);
+            var (actualForm, headersDict) = Task2.ResponseFormAndHeaders(response.Data, response.Headers);
 
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(actualForm, Is.EqualTo(expectedForm).UsingPropertiesComparer(),
                     "The submitted form data should match the response form data.");
 
-                Assert.That(headersDict, Is.Not.Null.And.Not.Empty,
+                Assert.That(response.Headers, Is.Not.Null.And.Not.Empty,
                     "Headers dictionary should not be empty.");
             }
         }

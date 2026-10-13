@@ -2,6 +2,6 @@
 {
     public class HttpbinPostResponse
     {
-        public Dictionary<string, object>? Form { get; set; }
+        public PizzaOrderForm? Form { get; set; }
     }
 }
