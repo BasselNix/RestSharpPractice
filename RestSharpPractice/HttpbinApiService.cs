@@ -2,7 +2,7 @@
 
 namespace RestSharpPractice
 {
-    internal class HttpbinApiService
+    public class HttpbinApiService
     {
         private readonly RestClient _client;
 
@@ -46,21 +46,29 @@ namespace RestSharpPractice
             foreach(var topping in toppings)
                 request.AddParameter("topping", topping);
 
-            var response = await _client.ExecuteAsync<HttpbinPostResponse>(request);
+            try
+            {
+                var response = await _client.ExecuteAsync<HttpbinPostResponse>(request);    
 
-            if (!response.IsSuccessful || response.Data == null)
-                throw new Exception($"POST request failed or Form data is null");
+                if (!response.IsSuccessful || response.Data == null)
+                    throw new Exception($"POST request failed or Form data is null");
 
-            // Combine both standard response headers and content headers
-            var headers = response.Headers?
-                .Concat(response.ContentHeaders ?? Enumerable.Empty<HeaderParameter>())
-                .GroupBy(h => h.Name!, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(
-                    g => g.Key,
-                    g => string.Join(", ", g.Select(h => h.Value?.ToString()))
-                ) ?? new Dictionary<string, string>();
+                // Combine both standard response headers and content headers
+                var headers = response.Headers?
+                    .Concat(response.ContentHeaders ?? Enumerable.Empty<HeaderParameter>())
+                    .GroupBy(h => h.Name!, StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => string.Join(", ", g.Select(h => h.Value?.ToString()))
+                    ) ?? new Dictionary<string, string>();
 
-            return (response.Data, headers);
+                return (response.Data, headers);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("The request timed out while contacting the gateway.");
+                return (new HttpbinPostResponse(), new Dictionary<string, string>());
+            }
         }
     }
 }

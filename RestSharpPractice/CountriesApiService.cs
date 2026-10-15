@@ -2,7 +2,7 @@
 
 namespace RestSharpPractice
 {
-    internal class CountriesApiService
+    public class CountriesApiService
     {
         private readonly RestClient _client;
 
@@ -21,14 +21,30 @@ namespace RestSharpPractice
         public async Task<List<CountryData>?> GetCountriesAsync()
         {
             var request = new RestRequest("countries/");
-            return await _client.GetAsync<List<CountryData>>(request);
+            try
+            {
+                return await _client.GetAsync<List<CountryData>>(request);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("The request timed out while contacting the gateway.");
+                return null;
+            }
         }
 
         // Fetches language data from the /lang/ endpoint
         public async Task<List<CountryData>?> GetLanguageDataAsync(string languageCode)
         {
             var request = new RestRequest($"/lang/{languageCode}");
-            return await _client.GetAsync<List<CountryData>>(request);
+            try
+            {
+                return await _client.GetAsync<List<CountryData>>(request);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("The request timed out while contacting the gateway.");
+                return null;
+            }
         }
     }
 }
